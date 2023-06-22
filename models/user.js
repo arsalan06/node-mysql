@@ -12,20 +12,21 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      User.hasMany(models.Book)
     }
   }
   User.init({
     firstName: {
       type:DataTypes.STRING,
-      allowNull:true
+      allowNull:false
     },
     lastName: {
       type:DataTypes.STRING,
-      allowNull:true
+      allowNull:false
     },
     email: {
       type:DataTypes.STRING,
-      allowNull:true,
+      allowNull:false,
       unique: true,
       validate: {
         isEmail: true
@@ -40,11 +41,19 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'User',
-    // defaultScope: {
-    //   attributes: {
-    //     exclude: ['password']
-    //   }
-    // }
+    defaultScope: {
+      attributes: {
+        exclude: ['password']
+      }
+    },
+    scopes:
+    {
+      withCreditionals: {
+        attributes: {
+          include: ['password']
+        }
+      }
+    }
   },
   
   );

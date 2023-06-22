@@ -40,10 +40,8 @@ exports.login = async (req, res, next) => {
         message: "please provide email or password",
       });
     } else if (email && password) {
-      const user = await User.findOne({ where: { email: email } });
-console.log("user exist", user.dataValues)
+      const user = await User.scope('withCreditionals').findOne({ where: { email: email } });
       const correct = await correctPassword(password, user.dataValues.password);
-      console.log("after password check", user)
       if (!user || !correct) {
         res.status(401).json({
           status: "Error",
@@ -51,7 +49,7 @@ console.log("user exist", user.dataValues)
         });
       }
       const token = signToken(user.id);
-
+      user.password = undefined
       res.status(201).json({
         status: "success",
         token,
